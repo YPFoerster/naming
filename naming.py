@@ -20,14 +20,15 @@ class fileName():
         if self.date is None:
             self.date=dt.date.today().strftime('%Y-%m-%d')
 
-        if suffix is None:
+        self.suffix=suffix
+        if self.suffix is None:
             pass
         else:
             self.suffix=self.check_for_separator(suffix,0,'.')
 
-        if output_dir is None:
-            output_dir=''
         self.out_dir=output_dir
+        if self.out_dir is None:
+            self.out_dir='./'
 
     def check_for_separator(self,string: str, pos: str='s', separator='_') -> str:
         """ Check if character at pos of string is separator, and if not, inserts it there.
