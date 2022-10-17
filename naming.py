@@ -52,6 +52,9 @@ class fileName():
         return out
 
     def append_components(self,append: list):
+        """
+        Return name with additional components added (separated by '_').
+        """
         out = self.name
         if append is not None:
             for comp in append:
@@ -59,6 +62,11 @@ class fileName():
         return out
 
     def get_name(self,append: list=None,suffix: str=None):
+        """
+        Build and return name, prepending with out_dir,
+        appending components to name, and adding the
+        date and suffix.
+        """
         if suffix is None and self.suffix is None:
             raise Exception('No suffix specifed in contructor nor at method call.')
         elif suffix is None:
