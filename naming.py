@@ -2,22 +2,34 @@ import os
 import datetime as dt
 
 class fileName():
+    """
+    Construct consistent file names reproducibly from given components,
+    following the schema
+        [output_dir]_[project_name]_[components]_[date].[suffix]
+    General suffix can be given here, otherwise must be specified in get_name.
+    """
     def __init__(self,project_name: str=None, components: list=None, date: str=None, suffix: str=None, output_dir: str=None):
 
-        self.name=''
+        self.name='' #the name "stem"
+
         if project_name is None:
             pass
         else:
+            #append project name to name and add '_' if it isn't there already
             self.name += self.check_for_separator(project_name,-1,'_')
 
         if components is None:
             pass
         else:
             for comp in components:
+                #add components one by one, separated by '_'.
+                # Append '_' if missing
                 self.name+=self.check_for_separator(comp,-1,'_')
 
         self.date=date
         if self.date is None:
+            # use current date if none is given
+            # NOTE: This is the intended use
             self.date=dt.date.today().strftime('%Y-%m-%d')
 
         self.suffix=suffix
@@ -31,8 +43,9 @@ class fileName():
             self.out_dir='./'
 
     def check_for_separator(self,string: str, pos: str='s', separator='_') -> str:
-        """ Check if character at pos of string is separator, and if not, inserts it there.
-            pos = 's' checks first caracter of string, pos = 'e' checks last
+        """ Check if character at pos of string is separator, and if not,
+            inserts one there. pos = 's' (alt.: 0) checks first caracter of
+            string, pos = 'e' (alt.: -1) checks last.
             NOTE: This doesn't have to be a class method in this form...
         """
         out = string
@@ -41,7 +54,7 @@ class fileName():
         elif pos in ['e',-1]:
             pos=-1
         else:
-            raise Exception("pos keyword has to be either of 's' (start) or 'e'\
+            raise Exception("pos keyword has to be either 's' (start) or 'e'\
                             (end). ")
         if out[pos]==separator:
             pass
@@ -55,6 +68,7 @@ class fileName():
     def append_components(self,append: list):
         """
         Return name with additional components added (separated by '_').
+        New components added behind components given to class constructor.
         """
         out = self.name
         if append is not None:
@@ -69,12 +83,13 @@ class fileName():
         date and suffix.
         """
         if suffix is None and self.suffix is None:
-            raise Exception('No suffix specifed in contructor nor at method call.')
+            raise Exception('No suffix specifed in contructor nor at\
+                            method call.')
         elif suffix is None:
             suffix=self.suffix
         elif isinstance(suffix,str):
+            #name and suffix must be separated by a single '.'
             suffix = self.check_for_separator(suffix,0,'.')
-
 
         return os.path.join(self.out_dir,self.append_components(append)+self.date+suffix)
 
